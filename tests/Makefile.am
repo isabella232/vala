@@ -686,6 +686,7 @@ TESTS = \
 	dbus/connection.test \
 	dbus/dynamic-method.test \
 	dbus/enum-string-marshalling.vala \
+	dbus/properties.test \
 	dbus/signals.test \
 	dbus/filedescriptor.test \
 	dbus/filedescriptor-async.test \

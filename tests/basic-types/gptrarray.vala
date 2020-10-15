@@ -73,6 +73,13 @@ void main () {
 		assert (foo3.ref_count == 1);
 		assert (array.length == 3);
 
+		int loop_size = 0;
+		foreach (weak Foo element in array) {
+			loop_size++;
+			assert (element == foo1 || element == foo2 || element == foo3);
+		}
+		assert (loop_size == 3);
+
 		assert (foo2 == array.get (1));
 		array.set (1, foo4);
 		assert (foo4 == array.get (1));

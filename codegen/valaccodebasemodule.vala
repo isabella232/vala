@@ -337,6 +337,7 @@ public abstract class Vala.CCodeBaseModule : CodeGenerator {
 	public TypeSymbol garray_type;
 	public TypeSymbol gbytearray_type;
 	public TypeSymbol gptrarray_type;
+	public TypeSymbol genericarray_type;
 	public TypeSymbol gthreadpool_type;
 	public DataType gquark_type;
 	public Struct gvalue_type;
@@ -506,6 +507,7 @@ public abstract class Vala.CCodeBaseModule : CodeGenerator {
 			garray_type = (TypeSymbol) glib_ns.scope.lookup ("Array");
 			gbytearray_type = (TypeSymbol) glib_ns.scope.lookup ("ByteArray");
 			gptrarray_type = (TypeSymbol) glib_ns.scope.lookup ("PtrArray");
+			genericarray_type = (TypeSymbol) glib_ns.scope.lookup ("GenericArray");
 			gthreadpool_type = (TypeSymbol) glib_ns.scope.lookup ("ThreadPool");
 
 			gerror = (Class) root_symbol.scope.lookup ("GLib").scope.lookup ("Error");
@@ -3764,7 +3766,8 @@ public abstract class Vala.CCodeBaseModule : CodeGenerator {
 		    (type.type_symbol.is_subtype_of (gstringbuilder_type)
 		     || type.type_symbol.is_subtype_of (garray_type)
 		     || type.type_symbol.is_subtype_of (gbytearray_type)
-		     || type.type_symbol.is_subtype_of (gptrarray_type))) {
+		     || type.type_symbol.is_subtype_of (gptrarray_type)
+		     || type.type_symbol.is_subtype_of (genericarray_type))) {
 			ccall.add_argument (new CCodeConstant ("TRUE"));
 		} else if (context.profile == Profile.GOBJECT
 		    && type.type_symbol == gthreadpool_type) {

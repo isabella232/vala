@@ -309,6 +309,42 @@ public abstract class Vala.CCodeControlFlowModule : CCodeMethodModule {
 			stmt.body.emit (this);
 
 			ccode.close ();
+		} else if (stmt.collection.value_type.compatible (new ObjectType ((Class) gptrarray_type)) || stmt.collection.value_type.compatible (new ObjectType ((Class) genericarray_type))) {
+			// iterating over a GPtrArray
+
+			var iterator_variable = new LocalVariable (uint_type.copy (), "%s_index".printf (stmt.variable_name));
+			visit_local_variable (iterator_variable);
+			var arr_index = get_variable_cname (get_local_cname (iterator_variable));
+
+			var ccond = new CCodeBinaryExpression (CCodeBinaryOperator.LESS_THAN, get_variable_cexpression (arr_index), new CCodeMemberAccess.pointer (get_variable_cexpression (get_local_cname (collection_backup)), "len"));
+
+			ccode.open_for (new CCodeAssignment (get_variable_cexpression (arr_index), new CCodeConstant ("0")),
+			                   ccond,
+			                   new CCodeAssignment (get_variable_cexpression (arr_index), new CCodeBinaryExpression (CCodeBinaryOperator.PLUS, get_variable_cexpression (arr_index), new CCodeConstant ("1"))));
+
+			var get_item = new CCodeFunctionCall (new CCodeIdentifier ("g_ptr_array_index"));
+			get_item.add_argument (get_variable_cexpression (get_local_cname (collection_backup)));
+			get_item.add_argument (get_variable_cexpression (arr_index));
+
+			CCodeExpression element_expr = get_item;
+
+			if (collection_type.get_type_arguments ().size != 1) {
+				Report.error (stmt.source_reference, "internal error: missing generic type argument");
+				stmt.error = true;
+				return;
+			}
+
+			var element_data_type = collection_type.get_type_arguments ().get (0).copy ();
+			element_data_type.value_owned = false;
+			element_expr = convert_from_generic_pointer (element_expr, element_data_type);
+			element_expr = get_cvalue_ (transform_value (new GLibValue (element_data_type, element_expr), stmt.type_reference, stmt));
+
+			visit_local_variable (stmt.element_variable);
+			ccode.add_assignment (get_variable_cexpression (get_local_cname (stmt.element_variable)), element_expr);
+
+			stmt.body.emit (this);
+
+			ccode.close ();
 		} else if (stmt.collection.value_type.compatible (new ObjectType (gvaluearray_type))) {
 			// iterating over a GValueArray
 
@@ -338,6 +374,10 @@ public abstract class Vala.CCodeControlFlowModule : CCodeMethodModule {
 			stmt.body.emit (this);
 
 			ccode.close ();
+		} else {
+			Report.error (stmt.source_reference, "internal error: unhandled collection type");
+			stmt.error = true;
+			return;
 		}
 
 		foreach (LocalVariable local in stmt.get_local_variables ()) {

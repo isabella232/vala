@@ -328,16 +328,9 @@ public abstract class Vala.CCodeControlFlowModule : CCodeMethodModule {
 
 			CCodeExpression element_expr = get_item;
 
-			if (collection_type.get_type_arguments ().size != 1) {
-				Report.error (stmt.source_reference, "internal error: missing generic type argument");
-				stmt.error = true;
-				return;
+			if (stmt.type_reference.value_owned) {
+				element_expr = get_cvalue_ (copy_value (new GLibValue (stmt.type_reference, element_expr), new StructValueType (gvalue_type)));
 			}
-
-			var element_data_type = collection_type.get_type_arguments ().get (0).copy ();
-			element_data_type.value_owned = false;
-			element_expr = convert_from_generic_pointer (element_expr, element_data_type);
-			element_expr = get_cvalue_ (transform_value (new GLibValue (element_data_type, element_expr), stmt.type_reference, stmt));
 
 			visit_local_variable (stmt.element_variable);
 			ccode.add_assignment (get_variable_cexpression (get_local_cname (stmt.element_variable)), element_expr);

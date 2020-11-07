@@ -36,7 +36,7 @@ void test_foreach_gvaluearray () {
 void test_generic_array_owned (GenericArray<Value?> array) {
 	uint i = 0;
 
-	foreach (Value item in array) {
+	foreach (Value? item in array) {
 		i++;
 	}
 
@@ -46,7 +46,7 @@ void test_generic_array_owned (GenericArray<Value?> array) {
 void test_generic_array_unowned (GenericArray<Value?> array) {
 	uint i = 0;
 
-	foreach (unowned Value item in array) {
+	foreach (unowned Value? item in array) {
 		i++;
 	}
 

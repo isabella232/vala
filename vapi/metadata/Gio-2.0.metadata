@@ -250,8 +250,8 @@ TlsPassword
   .set_value#virtual_method.destroy default=GLib.free
 Vfs
   // TODO: should probably be a simple generic
-  .local_file_add_info.extra_data default=null
-  .local_file_add_info.free_extra_data nullable default=null
+  .local_file_add_info.extra_data default=null out
+  .local_file_add_info.free_extra_data nullable default=null out unowned=false
 Volume
   .get_activation_root nullable
   .get_sort_key#virtual_method virtual
@@ -299,6 +299,7 @@ OutputMessage
   .control_messages type="GLib.SocketControlMessage***"
   .num_control_messages type="uint*"
 DBusError errordomain
+dbus_error_register_error_domain.quark_volatile ref
 DBusSubtreeEnumerateFunc unowned=false skip=false
 pollable_source_new parent="GLib.PollableSource" symbol_type="constructor" name="new"
 pollable_source_new_full parent="GLib.PollableSource" symbol_type="constructor" name="new_full"

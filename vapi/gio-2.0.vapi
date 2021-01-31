@@ -3174,7 +3174,7 @@ namespace GLib {
 		public virtual unowned string[] get_supported_uri_schemes ();
 		public virtual bool is_active ();
 		[NoWrapper]
-		public virtual void local_file_add_info (string filename, uint64 device, GLib.FileAttributeMatcher attribute_matcher, GLib.FileInfo info, GLib.Cancellable? cancellable = null, void* extra_data = null, GLib.DestroyNotify? free_extra_data = null);
+		public virtual void local_file_add_info (string filename, uint64 device, GLib.FileAttributeMatcher attribute_matcher, GLib.FileInfo info, GLib.Cancellable? cancellable = null, out void* extra_data = null, out GLib.DestroyNotify? free_extra_data = null);
 		[NoWrapper]
 		public virtual void local_file_moved (string source, string dest);
 		[NoWrapper]
@@ -4758,7 +4758,7 @@ namespace GLib {
 		[CCode (cheader_filename = "gio/gio.h")]
 		public static bool register_error (GLib.Quark error_domain, int error_code, string dbus_error_name);
 		[CCode (cheader_filename = "gio/gio.h")]
-		public static void register_error_domain (string error_domain_quark_name, size_t quark_volatile, [CCode (array_length_cname = "num_entries", array_length_pos = 3.1, array_length_type = "guint")] GLib.DBusErrorEntry[] entries);
+		public static void register_error_domain (string error_domain_quark_name, ref size_t quark_volatile, [CCode (array_length_cname = "num_entries", array_length_pos = 3.1, array_length_type = "guint")] GLib.DBusErrorEntry[] entries);
 		[CCode (cheader_filename = "gio/gio.h")]
 		public static bool strip_remote_error (GLib.Error error);
 		[CCode (cheader_filename = "gio/gio.h")]
